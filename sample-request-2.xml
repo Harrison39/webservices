@@ -1,0 +1,20 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://service.customer.com/types/v1">
+   <soapenv:Header>
+      <wsse:Security soapenv:mustUnderstand="1" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+         <wsse:UsernameToken wsu:Id="UsernameToken-F434D320D890F7CF1715251638704141">
+            <wsse:Username>admin</wsse:Username>
+            <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">admin</wsse:Password>
+            <wsse:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">fCrKJTmuuUuuzU0wPWSyGw==</wsse:Nonce>
+            <wsu:Created>2018-05-01T08:37:50.413Z</wsu:Created>
+         </wsse:UsernameToken>
+      </wsse:Security>
+   </soapenv:Header>
+   <soapenv:Body>
+      <v1:createCustomerRequest>
+         <v1:customerName>Vaibhav</v1:customerName>
+         <v1:customerAge>25</v1:customerAge>
+         <v1:customerCity>USA</v1:customerCity>
+         <v1:customerPhoneNumber>7683489</v1:customerPhoneNumber>
+      </v1:createCustomerRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
