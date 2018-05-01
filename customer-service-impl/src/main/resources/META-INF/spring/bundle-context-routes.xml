@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+	   http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd">
+
+	<cxf:cxfEndpoint name="customerServiceCXF" address="/customerservice" endpointName="cs:CustomerServicePort"
+		xmlns:cs="http://service.customer.com/v1" serviceName="cs:CustomerService" wsdlURL="wsdl/customer-service.wsdl" />
+
+	<camel:camelContext>
+	
+		<camel:propertyPlaceholder id="placeholder" location="classpath:sql.properties"></camel:propertyPlaceholder>
+		
+		<camel:dataFormats>
+			<camel:jaxb id="customerJaxb" contextPath="com.customer.service.types.v1"/>
+		</camel:dataFormats>
+	
+		<camel:route id="customer-service-main-route">
+			<camel:from uri="cxf:bean:customerServiceCXF?dataFormat=PAYLOAD&amp;bus=#secure-bus"/>
+			<camel:unmarshal ref="customerJaxb"/>
+			<camel:choice>
+				<camel:when>
+					<camel:simple>${headers.operationName} == 'createCustomer'</camel:simple>
+					<camel:to uri="direct:createCustomer"></camel:to>
+				</camel:when>
+				<camel:when>
+					<camel:simple>${headers.operationName} == 'updateCustomer'</camel:simple>
+					<camel:to uri="direct:updateCustomer"/>
+				</camel:when>
+				<camel:when>
+					<camel:simple>${headers.operationName} == 'deleteCustomer'</camel:simple>
+					<camel:to uri="direct:deleteCustomer"/>
+				</camel:when>
+			</camel:choice>
+			<camel:marshal ref="customerJaxb"/>
+		</camel:route>
+		
+		<camel:route id="create-customer-route">
+			<camel:from uri="direct:createCustomer"/>
+			<camel:process ref="customerRequestProcessor"/>
+			<camel:to uri="sql:{{sql.getCustomerId}}"/>
+			<camel:bean ref="customerRequestProcessor" method="getCustomerID"/>
+			<camel:to uri="sql:{{sql.createCustomer}}" />
+			<camel:process ref="customerResponseProcessor"></camel:process>
+		</camel:route>
+		
+		<camel:route id="update-customer-route">
+			<camel:from uri="direct:updateCustomer"/>
+			<camel:process ref="updateCustomerRequestProcessor"/>
+			<camel:to uri="sql:{{sql.updateCustomer}}"></camel:to>
+			<camel:process ref="updateCustomerResponseProcessor"/>
+		</camel:route>
+		
+		<camel:route id="delete-customer-route">
+			<camel:from uri="direct:deleteCustomer"/>
+			<camel:process ref="deleteCustomerRequestProcessor"/>
+			<camel:to uri="sql:{{sql.deleteCustomer}}"></camel:to>
+			<camel:process ref="deleteCustomerResponseProcessor"/>
+		</camel:route>
+
+	</camel:camelContext>
+	
+	<bean id="customerRequestProcessor" class="com.customer.service.processor.CustomerRequestProcessor"/>
+	<bean id="customerResponseProcessor" class="com.customer.service.processor.CustomerResponseProcessor"/>
+	
+	<bean id="updateCustomerRequestProcessor" class="com.customer.service.processor.UpdateCustomerRequestProcessor"/>
+	<bean id="updateCustomerResponseProcessor" class="com.customer.service.processor.UpdateCustomerResponseProcessor"/>
+	
+	<bean id="deleteCustomerRequestProcessor" class="com.customer.service.processor.DeleteCustomerRequestProcessor"/>
+	<bean id="deleteCustomerResponseProcessor" class="com.customer.service.processor.DeleteCustomerResponseProcessor"/>
+	
+	
+	<bean id="oracleDataSource" class="oracle.jdbc.pool.OracleDataSource"  destroy-method="close">
+		<property name="URL" value="jdbc:oracle:thin:@//localhost:1521/XE"/>
+		<property name="user" value="system"/>
+		<property name="password" value="admin"/>
+	</bean>
+	
+	<bean id="sql" class="org.apache.camel.component.sql.SqlComponent">
+		<property name="dataSource" ref="oracleDataSource"></property>
+	</bean>
+	
+
+</beans>

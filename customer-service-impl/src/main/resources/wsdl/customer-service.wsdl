@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://service.customer.com/v1"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="customer-service"
+	xmlns:cs="http://service.customer.com/types/v1" targetNamespace="http://service.customer.com/v1">
+
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="http://service.customer.com/types/v1" schemaLocation="schemas/customer-service.xsd"></xsd:import>
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="createCustomerRequest">
+		<wsdl:part name="createCustomerRequest" element="cs:createCustomerRequest"></wsdl:part>
+	</wsdl:message>
+
+	<wsdl:message name="createCustomerResponse">
+		<wsdl:part name="createCustomerResponse" element="cs:createCustomerResponse"></wsdl:part>
+	</wsdl:message>
+
+	<wsdl:message name="createCustomerFault">
+		<wsdl:part name="createCustomerFault" element="cs:createCustomerFault"></wsdl:part>
+	</wsdl:message>
+	
+	
+	<wsdl:message name="updateCustomerRequest">
+		<wsdl:part name="updateCustomerRequest" element="cs:updateCustomerRequest"></wsdl:part>
+	</wsdl:message>
+
+	<wsdl:message name="updateCustomerResponse">
+		<wsdl:part name="updateCustomerResponse" element="cs:updateCustomerResponse"></wsdl:part>
+	</wsdl:message>
+
+	<wsdl:message name="updateCustomerFault">
+		<wsdl:part name="updateCustomerFault" element="cs:updateCustomerFault"></wsdl:part>
+	</wsdl:message>
+	
+	<wsdl:message name="deleteCustomerRequest">
+		<wsdl:part name="deleteCustomerRequest" element="cs:deleteCustomerRequest"></wsdl:part>
+	</wsdl:message>
+
+	<wsdl:message name="deleteCustomerResponse">
+		<wsdl:part name="deleteCustomerResponse" element="cs:deleteCustomerResponse"></wsdl:part>
+	</wsdl:message>
+
+	<wsdl:message name="deleteCustomerFault">
+		<wsdl:part name="deleteCustomerFault" element="cs:deleteCustomerFault"></wsdl:part>
+	</wsdl:message>
+	
+
+	<wsdl:portType name="CustomerServicePort">
+		<wsdl:operation name="createCustomer">
+			<wsdl:input message="tns:createCustomerRequest" name="createCustomerRequest" />
+			<wsdl:output message="tns:createCustomerResponse" name="createCustomerResponse" />
+			<wsdl:fault message="tns:createCustomerFault" name="createCustomerFault"></wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="updateCustomer">
+			<wsdl:input message="tns:updateCustomerRequest" name="updateCustomerRequest" />
+			<wsdl:output message="tns:updateCustomerResponse" name="updateCustomerResponse" />
+			<wsdl:fault message="tns:updateCustomerFault" name="updateCustomerFault"></wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="deleteCustomer">
+			<wsdl:input message="tns:deleteCustomerRequest" name="deleteCustomerRequest" />
+			<wsdl:output message="tns:deleteCustomerResponse" name="deleteCustomerResponse" />
+			<wsdl:fault message="tns:deleteCustomerFault" name="deleteCustomerFault"></wsdl:fault>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="CustomerServiceBinding" type="tns:CustomerServicePort">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="createCustomer">
+			<soap:operation soapAction="createCustomer" style="document" />
+			<wsdl:input name="createCustomerRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="createCustomerResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="createCustomerFault">
+				<soap:fault name="createCustomerFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="updateCustomer">
+			<soap:operation soapAction="updateCustomer" style="document" />
+			<wsdl:input name="updateCustomerRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="updateCustomerResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="updateCustomerFault">
+				<soap:fault name="updateCustomerFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="deleteCustomer">
+			<soap:operation soapAction="deleteCustomer" style="document" />
+			<wsdl:input name="deleteCustomerRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="deleteCustomerResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="deleteCustomerFault">
+				<soap:fault name="deleteCustomerFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<wsdl:service name="CustomerService">
+		<wsdl:port name="CustomerServicePort" binding="tns:CustomerServiceBinding">
+			<soap:address location="http://0.0.0.0:8181/cxf/customerservice/v1"/>
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>
